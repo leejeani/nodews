@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+</head>
+<body>
+    <h2>이름은 {{name}}</h2>
+    <h2>아이디는 {{id}}</h2>
+    <h2>비밀번호는 {{pw}}</h2> 
+    <h2><a href="/join">회원가입</a></h2> 
+    <form method="post" action="/impl">
+    <input type="text" name="textbox_content" placeholder="이름을 적어주세요">
+    <input type="submit" value="버튼">
+    </form>
+</body>
+</html>

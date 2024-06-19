@@ -6,8 +6,11 @@ const bodyParser = require('body-parser')   //body parser 추가 1
 
 router
     .get("/",(req,res)=>{
-        var url = "/check?center=link1/center";
-        res.redirect(url);
+        let loginid;
+        if (req.user){
+            loginid  = req.user;
+        } 
+        res.render('index', { loginid:loginid, center:'link1/center'});
     })
     .post("",(req,res)=>{
 

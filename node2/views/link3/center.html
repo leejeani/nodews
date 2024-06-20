@@ -1,13 +1,53 @@
+<script>
+  let link3 = {
+      init:function(){
+        $('#get').click(()=>{
+          this.send();
+        });
+      },
+      send:function(){
+          $.ajax({
+              url:'/link3/getdata',
+              success:(result)=>{
+                this.display(result);
+              }
+          });
+      },
+      display:function(data){
+         let result;
+         $(data).each((idx,data)=>{
+            result += '<tr>';
+            result += '<td>'+data.id+'</td>';
+            result += '<td>'+data.pw+'</td>';
+            result += '</tr>';
+         });
+         $('#result > tbody').html(result);
+      }
+  };
+
+  $(function(){
+     link3.init();
+  });
+</script>
+
 <div class="container" style="margin-top:30px">
     <div class="row">
       
       <div class="col-sm-12">
        
         <h2>Link3 HEADING</h2>
-        <h5>Title description, Sep 2, 2017</h5>
-        <div class="fakeimg">Fake Image</div>
-        <p>Some text..</p>
-        <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+        <button id="get" type="button" class="btn btn-outline-primary">Get</button>
+        <table id="result" class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+            </tr>
+          </thead>
+          <tbody>
+           
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
+</div>

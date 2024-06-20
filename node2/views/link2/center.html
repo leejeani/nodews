@@ -5,13 +5,24 @@
        
         <h2>Link2 HEADING</h2>
         <h5>Title description, Sep 2, 2017</h5>
-        <ul>
-          {% for data in datas %}
-            <li>{{ data.name }}</li>
-          {% else %}
-            <li>This would display if the 'item' collection were empty</li>
-          {% endfor %}
-          </ul>
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>PWD</th>
+              <th>NAME</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in datas %}
+            <tr>
+              <td>{{data.id}}</td>
+              <td>{{data.pwd}}</td>
+              <td>{{data.name}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
         <p>Some text..</p>
         <p>Sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
       </div>

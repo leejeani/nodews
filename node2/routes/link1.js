@@ -4,6 +4,8 @@ const router = express.Router();
 const nunjucks = require('nunjucks');
 const bodyParser = require('body-parser')   //body parser 추가 1
 
+
+// /link1 요청시 진행
 router
     .get("/",(req,res)=>{
         let loginid;

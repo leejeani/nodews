@@ -8,6 +8,7 @@
       send:function(){
           $.ajax({
               url:'/link3/getdata',
+              dataType:'json',
               success:(result)=>{
                 this.display(result);
               }
@@ -18,7 +19,7 @@
          $(data).each((idx,data)=>{
             result += '<tr>';
             result += '<td>'+data.id+'</td>';
-            result += '<td>'+data.pw+'</td>';
+            result += '<td>'+data.name+'</td>';
             result += '</tr>';
          });
          $('#result > tbody').html(result);

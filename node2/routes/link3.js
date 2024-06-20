@@ -2,20 +2,10 @@ const express=require('express');
 const app = express();
 const router = express.Router();
 const nunjucks = require('nunjucks');
-const bodyParser = require('body-parser')   //body parser 추가 1
-/*
-nunjucks.configure('views',{
-    express:app,
-})
-
-app.set('view engine', 'html');//
-app.use(bodyParser.urlencoded({extended:false})); //객체 들어감. 추가 2 
-app.use(express.static('public'));
-*/
-const users = [
-    { id: "qqqq", pw: "1111" },
-    { id: "good", pw: "bye1" },
-];
+const bodyParser = require('body-parser')   
+// Database 연동
+var db_connect = require('../node_sql/db_connect');
+var db_sql = require('../node_sql/db_sql');
 
 router
     .get("/",(req,res)=>{
@@ -27,8 +17,14 @@ router
         res.render('index', { loginid:loginid, center:'link3/center'});
     })
     .get("/getdata",(req,res)=>{
-        console.log('getdata');
-        return res.send(users);
+        conn = db_connect.getConnection();
+            
+            conn.query(db_sql.cust_select, function (err, result, fields) {
+                const users = JSON.stringify(result);
+                return res.json(JSON.parse(users));
+            });
+
+
     })
     .post("",(req,res)=>{
 

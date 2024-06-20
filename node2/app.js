@@ -1,36 +1,44 @@
+// 1. 선언부 -------------------------------------------------------------------------------------------
+
+// 환경 설정 파일 로드
 require('dotenv').config();
+// express lib
 const express=require('express');
 const session = require('express-session');
+const app = express();
+// session 저장소 지정(메모리)
 const MemoryStore = require("memorystore")(session);
-
+// Passport lib 
 const passport = require("passport"),
 LocalStrategy = require("passport-local").Strategy;
-
-
-const app = express();
+// HTML SSR lib
+const nunjucks = require('nunjucks');
+const bodyParser = require('body-parser') 
+// CORS 지정
 const cors = require("cors");
 app.use(cors());
-
-const nunjucks = require('nunjucks');
-const bodyParser = require('body-parser')   //body parser 추가 1
+// Server Port 지정
 const port = process.env.SERVER_PORT || 3000;
-
-var db_connect = require('./db/db_connect');
-var db_sql = require('./db/db_sql');
-
+// Database 연동
+var db_connect = require('./node_sql/db_connect');
+var db_sql = require('./node_sql/db_sql');
+// Router 선언
 const link1 = require('./routes/link1');
 const link2 = require('./routes/link2');
 const link3 = require('./routes/link3');
 
-
+// HTML 파일을 views 폴더로 지정
 nunjucks.configure('views',{
     express:app,
 })
-
-app.set('view engine', 'html');//
-app.use(bodyParser.urlencoded({extended:false})); //객체 들어감. 추가 2 
+// .html 안써도 자동 로드
+app.set('view engine', 'html');
+// CSS, JS, Image 폴도로 지정
 app.use(express.static('public'));
+// POST 방식 처리
+app.use(bodyParser.urlencoded({extended:false}));
 
+// Session 선언
 app.use(
     session({
         secret: "secret key",
@@ -43,7 +51,11 @@ app.use(
     })
 );
 
-// Passport를 이용한 로그인 처리 ---------------------------------------------------------------------------------------
+
+// 1. 선언부 끝-------------------------------------------------------------------------------------------
+
+
+// 2. Passport를 이용한 로그인 처리 ---------------------------------------------------------------------------------------
 
 // passport 초기화 및 session 연결
 app.use(passport.initialize());
@@ -111,9 +123,11 @@ app.post(
     })
 );
 
-// Passport를 이용한 로그인 처리 끝---------------------------------------------------------------------------------------
+// 2. Passport를 이용한 로그인 처리 끝---------------------------------------------------------------------------------------
 
 
+
+// 3. Client 요청 URL 지정 ----------------------------------------------------------------------------------------------
 app.get('/', (req,res)=>{
     let loginid;
     console.log('/:'+req.user);
@@ -170,12 +184,16 @@ app.get('/logout', (req,res)=>{
     res.redirect('/');
 })
 
-// 화면 별 Router 등록
+// 3. Client 요청 URL 지정  끝----------------------------------------------------------------------------------------------
+
+
+
+// 4. 화면 별 Router 등록
 app.use('/link1', link1);
 app.use('/link2', link2);
 app.use('/link3', link3);
 
-// Server 가동
+// 5. Server 가동
 app.listen(port,()=>{
     console.log(`server start port:${port}`)
 })

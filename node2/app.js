@@ -65,14 +65,16 @@ app.use(passport.session());
 // done(null, user.id)로 세션을 초기화 한다.
 passport.serializeUser(function (req, user, done) {
     console.log('serializeUser'+user);
-    done(null, user.id);
+    console.log('serializeUser'+user.id);
+    console.log('serializeUser'+user.name);
+    done(null, { id: user.id, name: user.name });
 });
 
 // 사용자가 페이지를 방문할 때마다 호출되는 함수
 // done(null, id)로 사용자의 정보를 각 request의 user 변수에 넣어준다.
-passport.deserializeUser(function (req, id, done) {
-    console.log('deserializeUser'+id);
-    done(null, id);
+passport.deserializeUser(function (req, user, done) {
+    console.log('deserializeUser'+user.name);
+    done(null, user);
 });
 
 // local login 전략을 세우는 함수
@@ -88,24 +90,26 @@ passport.use(
             usernameField: "id",
             passwordField: "pwd",
         },
-        function (username, password, done) {
-            console.log('--------------------------'+username);
+        function (userid, password, done) {
+            console.log('--------------------------'+userid);
             console.log('--------------------------'+password);
 
             conn = db_connect.getConnection();
-            conn.query(db_sql.cust_select_one, [username], (err, row, fields) => {
+            conn.query(db_sql.cust_select_one, [userid], (err, row, fields) => {
             
                 if(err) throw err;
                 
                 let result = 0;
                 console.log('--------------------------'+row[0]['pwd']);
 
+                let name = row[0]['name'];
+
                 if(row[0] == undefined){
                     return done(null, false, { message: "Login Fail " });
                 }else if(row[0]['pwd'] != password){
                     return done(null, false, { message: "Login Fail " });
                 }else{
-                    return done(null, { id: username });
+                    return done(null, { id: userid, name: name });
                 }
 
             });
@@ -130,10 +134,12 @@ app.post(
 // 3. Client 요청 URL 지정 ----------------------------------------------------------------------------------------------
 app.get('/', (req,res)=>{
     let loginid;
-    console.log('/:'+req.user);
+
 
     if (req.user){
-        loginid  = req.user;
+        console.log('/:'+req.user.id);
+        console.log('/:'+req.user.name);
+        loginid  = req.user.id;
     } 
     console.log(loginid);
     if (loginid !== undefined) {
@@ -157,6 +163,7 @@ app.get('/register', (req,res)=>{
         center:'register'
     })
 })
+
 app.post('/register', (req,res)=>{
     let id = req.body.id;
     let pwd = req.body.pwd;
@@ -186,7 +193,18 @@ app.get('/logout', (req,res)=>{
 
 // 3. Client 요청 URL 지정  끝----------------------------------------------------------------------------------------------
 
-
+app.get('/test1', (req,res)=>{
+    res.render('test1');
+})
+app.get('/test2', (req,res)=>{
+    res.render('test2');
+})
+app.get('/test3', (req,res)=>{
+    res.render('test3');
+})
+app.get('/test4', (req,res)=>{
+    res.render('test4');
+})
 
 // 4. 화면 별 Router 등록
 app.use('/link1', link1);

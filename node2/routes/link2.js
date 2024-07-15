@@ -13,7 +13,7 @@ router
         let loginid;
 
         if (req.user){
-            loginid  = req.user;
+            loginid  = req.user.id;
         } 
         if (loginid !== undefined) {
 

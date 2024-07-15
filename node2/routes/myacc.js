@@ -8,11 +8,12 @@ const bodyParser = require('body-parser')   //body parser 추가 1
 // /link1 요청시 진행
 router
     .get("/",(req,res)=>{
-        let loginid;
+        let loginid, acc;
         if (req.user){
             loginid  = req.user.id;
+            acc  = req.user.acc;
         } 
-        res.render('index', { loginid:loginid, center:'link1/center'});
+        res.render('index', { loginid:loginid,acc:acc, center:'myacc/center'});
     })
     .post("",(req,res)=>{
 

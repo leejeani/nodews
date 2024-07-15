@@ -22,10 +22,7 @@ const port = process.env.SERVER_PORT || 3000;
 // Database 연동
 var db_connect = require('./node_sql/db_connect');
 var db_sql = require('./node_sql/db_sql');
-// Router 선언
-const link1 = require('./routes/link1');
-const link2 = require('./routes/link2');
-const link3 = require('./routes/link3');
+
 
 // HTML 파일을 views 폴더로 지정
 nunjucks.configure('views',{
@@ -67,7 +64,9 @@ passport.serializeUser(function (req, user, done) {
     console.log('serializeUser'+user);
     console.log('serializeUser'+user.id);
     console.log('serializeUser'+user.name);
-    done(null, { id: user.id, name: user.name });
+    console.log('serializeUser'+user.acc);
+
+    done(null, user);
 });
 
 // 사용자가 페이지를 방문할 때마다 호출되는 함수
@@ -103,13 +102,14 @@ passport.use(
                 console.log('--------------------------'+row[0]['pwd']);
 
                 let name = row[0]['name'];
+                let acc = row[0]['acc'];
 
                 if(row[0] == undefined){
                     return done(null, false, { message: "Login Fail " });
                 }else if(row[0]['pwd'] != password){
                     return done(null, false, { message: "Login Fail " });
                 }else{
-                    return done(null, { id: userid, name: name });
+                    return done(null, { id: userid, name: name, acc:acc });
                 }
 
             });
@@ -133,17 +133,18 @@ app.post(
 
 // 3. Client 요청 URL 지정 ----------------------------------------------------------------------------------------------
 app.get('/', (req,res)=>{
-    let loginid;
+    let loginid, loginname;
 
 
     if (req.user){
         console.log('/:'+req.user.id);
         console.log('/:'+req.user.name);
         loginid  = req.user.id;
+        loginname  = req.user.name;
     } 
     console.log(loginid);
     if (loginid !== undefined) {
-        res.render('index', { loginid:loginid });
+        res.render('index', { loginid:loginid,  loginname:loginname });
     } else {
         res.render('index');
     }
@@ -168,8 +169,9 @@ app.post('/register', (req,res)=>{
     let id = req.body.id;
     let pwd = req.body.pwd;
     let name = req.body.name;
+    let acc = req.body.acc;
 
-    let values = [id,pwd,name];
+    let values = [id,pwd,name,acc];
     conn = db_connect.getConnection();
     conn.query(db_sql.cust_insert, values, (e, result, fields) => {
         if(e){
@@ -207,9 +209,16 @@ app.get('/test4', (req,res)=>{
 })
 
 // 4. 화면 별 Router 등록
+// Router 선언
+const link1 = require('./routes/link1');
+const link2 = require('./routes/link2');
+const link3 = require('./routes/link3');
+const myacc = require('./routes/myacc');
+
 app.use('/link1', link1);
 app.use('/link2', link2);
 app.use('/link3', link3);
+app.use('/myacc', myacc);
 
 // 5. Server 가동
 app.listen(port,()=>{

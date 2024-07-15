@@ -54,6 +54,38 @@
             console.log(accounts);
 
             //console.log(web3.fromWei(balance).toNumber() + "ETH");
+            ethereum.on("connect", async (connectInfo) => {
+                console.log(connectInfo); // {chainId: '0x539'}
+                console.log(parseInt(connectInfo.chainId)); // 1337(가나슈의 기본 체인 아이디)
+
+                // 계정 잔액 조회 및 출력 함수
+                const getBalance = async (accounts) => {
+                    // HTML에 지갑 주소를 출력합니다.
+                    console.log(accounts[0]);
+
+                    // 메타마스크에 RPC 잔액 조회 요청을 보냅니다. (params : 메타마스크 계정)
+                    const balance = await ethereum.request({
+                        method: "eth_getBalance",
+                        params: accounts,
+                    });
+                    console.log(balance);
+
+                    // 계정 잔액을 HTML에 출력합니다.
+                    // nowBalanceElem.innerHTML = parseInt(balance) / Math.pow(10, 18) + "ETH";
+                }
+
+                try {
+                    // 메타마스크 확장 프로그램의 계정 조회
+                    const accounts = await ethereum.request({
+                        method: "eth_requestAccounts"
+                    });
+
+                    // 계정 잔액 조회 함수 호출
+                    await getBalance(accounts);
+                } catch (error) {
+                    console.error(error);
+                }
+            });
         </script>
     </body>
 </html>

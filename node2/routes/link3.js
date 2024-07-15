@@ -11,7 +11,7 @@ router
     .get("/",(req,res)=>{
         let loginid;
         if (req.user){
-            loginid  = req.user;
+            loginid  = req.user.id;
         } 
         
         res.render('index', { loginid:loginid, center:'link3/center'});
